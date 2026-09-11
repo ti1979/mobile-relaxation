@@ -3,8 +3,21 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>{{ .Site.Title }}</title>
+  <!-- 検索結果に表示されるタイトル -->
+  <title>{{ if .Title }}{{ .Title }} | {{ end }}Mobile Relaxation - Simple Breathwork App</title>
+  
+  <!-- 検索結果に表示される説明文（100〜120文字程度） -->
+  <meta name="description" content="A simple, web-based breathwork and relaxation app. Practice Box Breathing, 4-7-8, and custom breathing patterns anytime on mobile.">
 
+<!-- SNSシェア時に綺麗に表示させるOGPタグ -->
+  <meta property="og:title" content="Mobile Relaxation - Breathwork App">
+  <meta property="og:description" content="Simple breathing exercises for daily relaxation and mindfulness.">
+  <meta property="og:type" content="website">
+  
+  <!-- Cloudflare Web Analytics -->
+  <script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "0c4ca592694b40aca92f14a79514c3c0"}'></script>
+  <!-- End Cloudflare Web Analytics -->
+  
   <style>
     :root { --ink: #5a5568; }
     * { box-sizing: border-box; }
