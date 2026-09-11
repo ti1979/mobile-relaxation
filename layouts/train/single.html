@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="{{ .Site.Language.Name }}">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ .Title }} | {{ .Site.Title }}</title>
+  
+  <style>
+    :root { --ink: #5a5568; }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0; min-height: 100vh; color: var(--ink);
+      font-family: Georgia, 'Times New Roman', serif;
+      background:
+        radial-gradient(1200px 600px at 15% 0%, #f6efff 0%, transparent 60%),
+        radial-gradient(1000px 700px at 90% 10%, #e8f3ec 0%, transparent 55%),
+        linear-gradient(160deg, #fffdf8 0%, #f4eefb 45%, #eef5f1 100%);
+      background-attachment: fixed;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      padding: 24px;
+    }
+
+    .container { max-width: 540px; width: 100%; text-align: center; }
+    .back-link { display: inline-block; margin-bottom: 24px; text-decoration: none; color: var(--ink); opacity: .7; font-size: .9rem; }
+    .title { font-size: 1.8rem; font-weight: 500; margin: 0 0 8px; }
+    .tradition { font-size: .8rem; letter-spacing: .2em; text-transform: uppercase; opacity: .5; margin-bottom: 30px; }
+
+    /* 呼吸アニメーション用のサークル */
+    .visualizer {
+      width: 200px; height: 200px; margin: 0 auto 30px; border-radius: 50%;
+      background: radial-gradient(circle, rgba(214,199,240,.6) 0%, rgba(255,255,255,.8) 100%);
+      box-shadow: 0 10px 40px rgba(120,100,160,.15);
+      display: flex; align-items: center; justify-content: center;
+      transition: transform 1s linear; position: relative;
+    }
+    .phase-text { font-size: 1.1rem; letter-spacing: .1em; font-weight: 500; }
+
+    /* カスタマイズパネル */
+    .customize-panel {
+      background: rgba(255,255,255,.6); backdrop-filter: blur(8px);
+      border: 1px solid rgba(255,255,255,.8); border-radius: 20px;
+      padding: 24px; box-shadow: 0 6px 24px rgba(120,100,160,.08);
+      margin-top: 20px; text-align: left;
+    }
+    .customize-title { font-size: .85rem; letter-spacing: .15em; text-transform: uppercase; opacity: .6; margin-bottom: 16px; text-align: center; }
+
+    /* breathing_note 表示用ボックス */
+    .note-box {
+      font-size: 0.8rem;
+      line-height: 1.5;
+      opacity: 0.8;
+      background: rgba(255, 255, 255, 0.7);
+      padding: 12px 16px;
+      border-radius: 12px;
+      margin-bottom: 20px;
+      text-align: center;
+      border: 1px dashed rgba(90, 85, 104, 0.25);
+    }
+
+    .controls { display: flex; gap: 12px; justify-content: center; margin-top: 24px; }
+    .btn { font: inherit; cursor: pointer; border: 1px solid rgba(90,85,104,.3); border-radius: 25px; padding: 10px 24px; background: #fff; color: var(--ink); }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <a href="{{ "" | relURL }}" class="back-link">&larr; Back to Gallery</a>
+  <h1 class="title" id="breathName">Loading...</h1>
+  <div class="tradition" id="breathTradition"></div>
+
+  <div class="visualizer" id="visualizer">
+    <div class="phase-text" id="phaseText">Ready</div>
+  </div>
+
+  <div class="controls">
+    <button class="btn" id="startBtn">Start</button>
+  </div>
+
+  <div class="customize-panel">
+    <div class="customize-title">Customize Rhythm</div>
+
+    <!-- JSで breathing_note を注入する領域 -->
+    <div id="noteBox" class="note-box" style="display: none;"></div>
+
+    <div id="rhythmInfo" style="font-size: 0.9rem; text-align: center; opacity: 0.8;"></div>
+  </div>
+</div>
+
+<!-- Hugoのデータを埋め込む要素 -->
+{{ $lang := .Site.Language.Lang }}
+{{ $breaths := index site.Data (print "breaths_" $lang) | default (index site.Data $lang "breaths") | default site.Data.breaths }}
+<div id="data-store" data-breaths='{{ $breaths | jsonify | safeHTMLAttr }}' style="display:none;"></div>
+
+<script>
+(function() {
+  "use strict";
+
+  var store = document.getElementById("data-store");
+  if (!store) return;
+
+  var rawData = [];
+  try {
+    rawData = JSON.parse(store.getAttribute("data-breaths") || "[]");
+  } catch(e) {
+    console.error("Could not parse breaths data", e);
+  }
+
+  // 1. breathing_note の抽出とテキスト注入
+  var breathingNote = rawData.find(function(item) { return item.breathing_note; });
+  if (breathingNote && breathingNote.breathing_note && breathingNote.breathing_note.text) {
+    var noteEl = document.getElementById("noteBox");
+    if (noteEl) {
+      noteEl.textContent = breathingNote.breathing_note.text;
+      noteEl.style.display = "block";
+    }
+  }
+
+  // 2. 実データの抽出 (idを持つもの)
+  var breaths = rawData.filter(function(item) { return item.id; });
+  var params = new URLSearchParams(window.location.search);
+  var breathId = params.get("b") || "box";
+  var currentItem = breaths.find(function(item) { return item.id === breathId; }) || breaths[0];
+
+  if (!currentItem) return;
+
+  // 画面要素の設定
+  document.getElementById("breathName").textContent = currentItem.name;
+  document.getElementById("breathTradition").textContent = currentItem.tradition || "";
+  
+  var rhythmInfo = document.getElementById("rhythmInfo");
+  if (currentItem.pattern) {
+    var p = currentItem.pattern;
+    var parts = ["Inhale: " + p.inhale + "s"];
+    if (p.hold1) parts.push("Hold: " + p.hold1 + "s");
+    parts.push("Exhale: " + p.exhale + "s");
+    if (p.hold2) parts.push("Rest: " + p.hold2 + "s");
+    rhythmInfo.textContent = parts.join(" | ");
+  } else {
+    rhythmInfo.textContent = "Free pacing (No fixed timer)";
+  }
+
+  // 簡易タイマー制御（プレースホルダー）
+  var startBtn = document.getElementById("startBtn");
+  var phaseText = document.getElementById("phaseText");
+  var isRunning = false;
+
+  startBtn.addEventListener("click", function() {
+    isRunning = !isRunning;
+    startBtn.textContent = isRunning ? "Pause" : "Start";
+    phaseText.textContent = isRunning ? "Inhale..." : "Ready";
+  });
+})();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,104 @@
+[
+  {
+    "breathing_note": {
+      "title": "Una guía suave, no un temporizador rígido",
+      "text": "Los tiempos mostrados son solo una guía para mantener un ritmo suave, no objetivos estrictos. Deja que cada respiración varíe de forma natural dentro de un rango cómodo. El ritmo puede variar de forma natural en lugar de seguir tiempos exactos."
+    }
+  },
+  {
+    "id": "box",
+    "name": "Respiración Cuadrada",
+    "tradition": "Trabajo de Respiración Moderno",
+    "region": "General",
+    "color": "sand",
+    "wiki": "https://es.wikipedia.org/wiki/Pranayama",
+    "pattern": { "inhale": 4, "hold1": 4, "exhale": 4, "hold2": 4 },
+    "desc": "Una técnica sencilla de respiración guiada basada en cuatro fases iguales: inhalar, mantener, exhalar y mantener. El ritmo constante ayuda a calmar la atención y fomenta una respiración tranquila y controlada.",
+    "howto": "Inhala por la nariz durante 4 segundos, mantén la respiración durante 4 segundos, exhala durante 4 segundos y vuelve a mantener la respiración durante 4 segundos. Procura que las cuatro fases tengan la misma duración."
+  },
+  {
+    "id": "478",
+    "name": "Respiración 4-7-8",
+    "tradition": "Trabajo de Respiración Moderno",
+    "region": "General",
+    "color": "lavender",
+    "wiki": "https://es.wikipedia.org/wiki/Pranayama",
+    "pattern": { "inhale": 4, "hold1": 7, "exhale": 8, "hold2": 0 },
+    "desc": "Un patrón de respiración lenta con una exhalación más prolongada. Popularizado por el doctor Andrew Weil e inspirado en el pranayama yóguico; se utiliza a menudo para la relajación y antes de dormir.",
+    "howto": "Inhala por la nariz durante 4 segundos, mantén durante 7 y exhala por la boca durante 8. Repite el patrón durante cuatro ciclos."
+  },
+  {
+    "id": "nadi",
+    "name": "Respiración Alterna de las Fosas Nasales",
+    "tradition": "Nadi Shodhana",
+    "region": "India",
+    "color": "sage",
+    "wiki": "https://es.wikipedia.org/wiki/Pranayama",
+    "pattern": { "inhale": 4, "hold1": 2, "exhale": 4, "hold2": 2 },
+    "desc": "Nadi Shodhana, que significa 'limpieza de canales', alterna la respiración entre las fosas nasales y se practica tradicionalmente como una forma suave y consciente de pranayama.",
+    "howto": "Tapa suavemente la fosa nasal derecha e inhala por la izquierda. Cierra la izquierda y exhala por la derecha. Inhala por la derecha, ciérrala y exhala por la izquierda. Sigue el pulso en pantalla para cada fase."
+  },
+  {
+    "id": "longexhale",
+    "name": "Respiración con Exhalación Prolongada",
+    "tradition": "Trabajo de Respiración Moderno",
+    "region": "General",
+    "color": "mist",
+    "pattern": { "inhale": 4, "hold1": 0, "exhale": 8, "hold2": 0 },
+    "desc": "Un patrón de relajación sencillo en el que la exhalación dura más que la inhalación. La exhalación prolongada favorece una respiración lenta y constante.",
+    "howto": "Inhala suavemente por la nariz durante 4 segundos, luego deja que el aire salga lentamente durante 8 segundos. Repite sin forzar la respiración."
+  },
+  {
+    "id": "bhramari",
+    "name": "Respiración de la Abeja",
+    "tradition": "Bhramari",
+    "region": "India",
+    "color": "cream",
+    "wiki": "https://es.wikipedia.org/wiki/Bhramari_pranayama",
+    "pattern": { "inhale": 4, "hold1": 0, "exhale": 8, "hold2": 0 },
+    "desc": "Bhramari recibe su nombre del zumbido de las abejas. Se produce un zumbido constante durante la exhalación que puede resultar calmante y reconfortante.",
+    "howto": "Inhala suavemente por la nariz. Exhala emitiendo un zumbido grave y constante ('hmmm') mientras mantienes la boca cerrada. Puedes cubrir suavemente las orejas con los dedos para aumentar la sensación de resonancia"
+  },
+  {
+    "id": "bhastrika",
+    "name": "Respiración del Fuelle",
+    "tradition": "Bhastrika",
+    "region": "India",
+    "color": "terracotta",
+    "wiki": "https://es.wikipedia.org/wiki/Pranayama",
+    "pattern": { "inhale": 2, "hold1": 0, "exhale": 2, "hold2": 0 },
+    "desc": "Bhastrika (Respiración del Fuelle) es un pranayama tradicional caracterizado por inhalaciones y exhalaciones activas y rítmicas. Es una práctica estimulante más que una respiración suave de relajación.",
+    "howto": "Siéntate erguido con los hombros relajados. Inhala y exhala activamente por la nariz a un ritmo constante de 1 a 1, permitiendo que el abdomen se mueva con la respiración. Comienza con una serie corta y detente si sientes mareos o incomodidad. Si tienes alguna enfermedad cardiovascular o problemas de presión arterial, consulta con un profesional adecuado antes de practicar una respiración vigorosa."
+  },
+  {
+    "id": "dantian",
+    "name": "Respiración Abdominal",
+    "tradition": "Respiración Dantian",
+    "region": "China",
+    "color": "mist",
+    "wiki": "https://es.wikipedia.org/wiki/Qigong",
+    "pattern": { "inhale": 5, "hold1": 0, "exhale": 6, "hold2": 1 },
+    "desc": "Una práctica suave de respiración asociada con las tradiciones del qigong centradas en el dantian. La atención se centra en la parte baja del abdomen mientras la respiración se mantiene lenta y cómoda.",
+    "howto": "Apoya una mano en el abdomen inferior. Inhala suavemente y permite que el abdomen se expanda. Exhala lentamente y deja que se relaje. Mantén la respiración cómoda en lugar de forzar el movimiento."
+  },
+  {
+    "id": "palm",
+    "name": "Palming (Palmeado)",
+    "tradition": "Relajación Ocular",
+    "region": "Global",
+    "color": "sand",
+    "pattern": null,
+    "desc": "Una práctica suave de relajación ocular que hace descansar los nervios ópticos. Calienta las palmas de las manos, colócalas ligeramente sobre los ojos cerrados sin presionar, y deja que la oscuridad y el calor alivien el cansancio y aporten calma mental.",
+    "howto": "Frota las palmas de tus manos hasta que estén calientes. Cierra los ojos y apoya suavemente las palmas ahuecadas sobre ellos sin presionar los globos oculares. Descansa en la oscuridad completa, respirando de forma lenta y cómoda."
+  },
+  {
+    "id": "neck",
+    "name": "Respiración de Liberación para Cuello y Garganta",
+    "tradition": "Relajación Moderna",
+    "region": "General",
+    "color": "lavender",
+    "pattern": { "inhale": 4, "hold1": 2, "exhale": 6, "hold2": 2 },
+    "desc": "Un ejercicio suave de relajación que combina la respiración lenta con la conciencia de la mandíbula, el cuello y los hombros. La ligera inclinación del mentón está inspirada en la práctica de jalandhara bandha.",
+    "howto": "Inhala suavemente por la nariz manteniendo el cuello largo y relajado. Mantén suavemente, luego exhala mientras dejas caer los hombros y relajas la mandíbula. Mantén la inclinación del mentón de forma suave y cómoda."
+  }
+]

@@ -1,0 +1,5 @@
+baseURL = "https://relax.amblery.com/"
+locale = "en"
+defaultContentLanguage = "en"
+title = "Mobile Relaxation"
+

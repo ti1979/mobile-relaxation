@@ -1,0 +1,104 @@
+[
+{
+  "breathing_note": {
+    "title": "A gentle guide, not a rigid timer",
+    "text": "The times shown are gentle pacing guides, not strict targets. Let each breath vary naturally within a comfortable range. The rhythm may ebb and flow rather than follow exact seconds."
+  }
+},
+{
+  "id": "box",
+  "name": "Box Breathing",
+  "tradition": "Modern Breathwork",
+  "region": "General",
+  "color": "sand",
+  "wiki": "https://en.wikipedia.org/wiki/Pranayama",
+  "pattern": { "inhale": 4, "hold1": 4, "exhale": 4, "hold2": 4 },
+  "desc": "A simple paced-breathing technique built around four equal phases: inhale, hold, exhale, and hold. The steady rhythm can help settle attention and encourage calm, controlled breathing.",
+  "howto": "Inhale through the nose for 4 seconds, hold for 4, exhale for 4, then hold for 4. Keep every side of the square equal."
+},
+{
+"id": "478",
+"name": "4-7-8 Breathing",
+"tradition": "Modern Breathwork",
+"region": "General",
+"color": "lavender",
+"wiki": "https://en.wikipedia.org/wiki/Pranayama",
+"pattern": { "inhale": 4, "hold1": 7, "exhale": 8, "hold2": 0 },
+"desc": "A slow breathing pattern with a longer exhale. Popularized by Dr. Andrew Weil and inspired by yogic pranayama; it is often used for relaxation and before sleep.",
+"howto": "Inhale through the nose for 4 seconds, hold for 7, then exhale through the mouth for 8. Repeat for four cycles."
+},
+{
+"id": "nadi",
+"name": "Alternate Nostril Breathing",
+"tradition": "Nadi Shodhana",
+"region": "India",
+"color": "sage",
+"wiki": "https://en.wikipedia.org/wiki/Pranayama",
+"pattern": { "inhale": 4, "hold1": 2, "exhale": 4, "hold2": 2 },
+"desc": "Nadi Shodhana, meaning 'channel cleansing,' alternates the breath between the nostrils and is traditionally practiced as a gentle, attentive form of pranayama.",
+"howto": "Close the right nostril and inhale through the left. Close the left and exhale through the right. Inhale through the right, close it, and exhale through the left. Follow the on-screen pulse for each phase."
+},
+{
+"id": "longexhale",
+"name": "Long Exhale Breathing",
+"tradition": "Modern Breathwork",
+"region": "General",
+"color": "mist",
+"pattern": { "inhale": 4, "hold1": 0, "exhale": 8, "hold2": 0 },
+"desc": "A simple relaxation pattern in which the exhale lasts longer than the inhale. The extended exhale encourages slow, steady breathing.",
+"howto": "Inhale softly through the nose for 4 seconds, then let the breath flow out slowly for 8 seconds. Repeat without forcing the breath."
+},
+{
+"id": "bhramari",
+"name": "Bee Breathing",
+"tradition": "Bhramari",
+"region": "India",
+"color": "cream",
+"wiki": "https://en.wikipedia.org/wiki/Bhramari_pranayama",
+"pattern": { "inhale": 4, "hold1": 0, "exhale": 8, "hold2": 0 },
+"desc": "Bhramari, named after the humming sound of a bee. A steady humming sound is produced during the exhale and can feel calming and soothing.",
+"howto": "Inhale gently through the nose. Exhale with a low, steady 'hmmm' while keeping the mouth closed. You may gently cover the ears with your fingers for a stronger sense of resonance."
+},
+{
+"id": "bhastrika",
+"name": "Bellows Breathing",
+"tradition": "Bhastrika",
+"region": "India",
+"color": "terracotta",
+"wiki": "https://en.wikipedia.org/wiki/Pranayama#Bhastrika",
+"pattern": { "inhale": 2, "hold1": 0, "exhale": 2, "hold2": 0 },
+"desc": "Bhastrika (Bellows Breath) is a traditional pranayama characterized by active, rhythmic inhalations and exhalations. It is a stimulating practice rather than a gentle relaxation breath.",
+"howto": "Sit upright with relaxed shoulders. Inhale and exhale actively through the nose at a steady 1-to-1 rhythm, allowing the abdomen to move with the breath. Begin with a short set and stop if you feel dizzy or uncomfortable. People with cardiovascular or blood-pressure conditions should seek appropriate guidance before practicing forceful breathing."
+},
+{
+"id": "dantian",
+"name": "Belly Breathing",
+"tradition": "Dantian Breathing",
+"region": "China",
+"color": "mist",
+"wiki": "https://en.wikipedia.org/wiki/Qigong",
+"pattern": { "inhale": 5, "hold1": 0, "exhale": 6, "hold2": 1 },
+"desc": "A gentle breathing practice associated with dantian-focused traditions of qigong. Attention is placed on the lower abdomen while the breath remains slow and comfortable.",
+"howto": "Rest one hand on the lower abdomen. Inhale gently and allow the abdomen to expand. Exhale slowly and allow it to soften. Keep the breath comfortable rather than forcing the movement."
+},
+{
+  "id": "palm",
+  "name": "Palming",
+  "tradition": "Eye Relaxation",
+  "region": "Global",
+  "color": "sand",
+  "pattern": null,
+  "desc": "A gentle eye-relaxation practice that rests the visual nerves. Warm the palms, cup them lightly over closed eyes without pressing, and allow the darkness and heat to soothe tiredness and bring mental calm.",
+  "howto": "Rub your palms together until warm. Close your eyes and gently cup your palms over them without pressing on the eyeballs. Rest in the complete darkness, breathing slowly and comfortably."
+},
+{
+"id": "neck",
+"name": "Neck & Throat Release Breath",
+"tradition": "Modern Relaxation",
+"region": "General",
+"color": "lavender",
+"pattern": { "inhale": 4, "hold1": 2, "exhale": 6, "hold2": 2 },
+"desc": "A gentle relaxation exercise that combines slow breathing with awareness of the jaw, neck, and shoulders. The chin tuck is loosely inspired by the neck and throat awareness associated with jalandhara bandha.",
+"howto": "Inhale gently through the nose while lengthening the neck. Hold softly, then exhale while dropping the shoulders and relaxing the jaw. Keep the chin tuck gentle and comfortable."
+}
+]
