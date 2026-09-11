@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="{{ .Site.Language.Lang }}">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -87,9 +87,7 @@
 </div>
 
 <!-- Hugoのデータを埋め込む要素 -->
-{{ $lang := .Site.Language.Lang }}
-{{ $breaths := index site.Data (print "breaths_" $lang) | default (index site.Data $lang "breaths") | default site.Data.breaths }}
-<div id="data-store" data-breaths='{{ $breaths | jsonify | safeHTMLAttr }}' style="display:none;"></div>
+<div id="data-store" data-breaths='{{ site.Data.breaths | jsonify | safeHTMLAttr }}' style="display:none;"></div>
 
 <script>
 (function() {
