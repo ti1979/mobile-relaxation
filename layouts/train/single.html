@@ -21,44 +21,38 @@
     }
 
     .container { max-width: 540px; width: 100%; text-align: center; }
-    .back-link { display: inline-block; margin-bottom: 24px; text-decoration: none; color: var(--ink); opacity: .7; font-size: .9rem; }
-    .title { font-size: 1.8rem; font-weight: 500; margin: 0 0 8px; }
-    .tradition { font-size: .8rem; letter-spacing: .2em; text-transform: uppercase; opacity: .5; margin-bottom: 30px; }
+    .back-link { display: inline-block; margin-bottom: 20px; text-decoration: none; color: var(--ink); opacity: .7; font-size: .9rem; }
+    .title { font-size: 1.8rem; font-weight: 500; margin: 0 0 4px; }
+    .tradition { font-size: .8rem; letter-spacing: .2em; text-transform: uppercase; opacity: .5; margin-bottom: 24px; }
 
     /* 呼吸アニメーション用のサークル */
     .visualizer {
-      width: 200px; height: 200px; margin: 0 auto 30px; border-radius: 50%;
+      width: 220px; height: 220px; margin: 0 auto 24px; border-radius: 50%;
       background: radial-gradient(circle, rgba(214,199,240,.6) 0%, rgba(255,255,255,.8) 100%);
       box-shadow: 0 10px 40px rgba(120,100,160,.15);
-      display: flex; align-items: center; justify-content: center;
-      transition: transform 1s linear; position: relative;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      transition: transform 0.1s linear; position: relative;
     }
-    .phase-text { font-size: 1.1rem; letter-spacing: .1em; font-weight: 500; }
+    .phase-text { font-size: 1.2rem; letter-spacing: .1em; font-weight: 600; margin-bottom: 4px; }
+    .timer-text { font-size: 2.2rem; font-weight: bold; }
 
-    /* カスタマイズパネル */
-    .customize-panel {
-      background: rgba(255,255,255,.6); backdrop-filter: blur(8px);
-      border: 1px solid rgba(255,255,255,.8); border-radius: 20px;
-      padding: 24px; box-shadow: 0 6px 24px rgba(120,100,160,.08);
-      margin-top: 20px; text-align: left;
-    }
-    .customize-title { font-size: .85rem; letter-spacing: .15em; text-transform: uppercase; opacity: .6; margin-bottom: 16px; text-align: center; }
-
-    /* breathing_note 表示用ボックス */
-    .note-box {
-      font-size: 0.8rem;
-      line-height: 1.5;
-      opacity: 0.8;
+    /* 呼吸間隔（リズム）表示バッジ */
+    .rhythm-badge {
+      display: inline-block;
       background: rgba(255, 255, 255, 0.7);
-      padding: 12px 16px;
-      border-radius: 12px;
+      backdrop-filter: blur(4px);
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-size: 0.95rem;
+      font-weight: 500;
+      border: 1px solid rgba(90, 85, 104, 0.15);
       margin-bottom: 20px;
-      text-align: center;
-      border: 1px dashed rgba(90, 85, 104, 0.25);
+      letter-spacing: 0.05em;
     }
 
-    .controls { display: flex; gap: 12px; justify-content: center; margin-top: 24px; }
-    .btn { font: inherit; cursor: pointer; border: 1px solid rgba(90,85,104,.3); border-radius: 25px; padding: 10px 24px; background: #fff; color: var(--ink); }
+    .controls { display: flex; gap: 12px; justify-content: center; margin-top: 10px; }
+    .btn { font: inherit; cursor: pointer; border: 1px solid rgba(90,85,104,.3); border-radius: 25px; padding: 12px 32px; background: #fff; color: var(--ink); font-weight: 500; font-size: 1rem; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+    .btn:hover { background: #fdfdfd; }
   </style>
 </head>
 <body>
@@ -68,21 +62,17 @@
   <h1 class="title" id="breathName">Loading...</h1>
   <div class="tradition" id="breathTradition"></div>
 
+  <!-- シンプルに呼吸間隔を表示 -->
+  <div class="rhythm-badge" id="rhythmInfo">Loading rhythm...</div>
+
+  <!-- 呼吸サークル 兼 タイマー表示 -->
   <div class="visualizer" id="visualizer">
     <div class="phase-text" id="phaseText">Ready</div>
+    <div class="timer-text" id="timerText">0</div>
   </div>
 
   <div class="controls">
     <button class="btn" id="startBtn">Start</button>
-  </div>
-
-  <div class="customize-panel">
-    <div class="customize-title">Customize Rhythm</div>
-
-    <!-- JSで breathing_note を注入する領域 -->
-    <div id="noteBox" class="note-box" style="display: none;"></div>
-
-    <div id="rhythmInfo" style="font-size: 0.9rem; text-align: center; opacity: 0.8;"></div>
   </div>
 </div>
 
@@ -103,17 +93,7 @@
     console.error("Could not parse breaths data", e);
   }
 
-  // 1. breathing_note の抽出とテキスト注入
-  var breathingNote = rawData.find(function(item) { return item.breathing_note; });
-  if (breathingNote && breathingNote.breathing_note && breathingNote.breathing_note.text) {
-    var noteEl = document.getElementById("noteBox");
-    if (noteEl) {
-      noteEl.textContent = breathingNote.breathing_note.text;
-      noteEl.style.display = "block";
-    }
-  }
-
-  // 2. 実データの抽出 (idを持つもの)
+  // 1. 呼吸データの抽出
   var breaths = rawData.filter(function(item) { return item.id; });
   var params = new URLSearchParams(window.location.search);
   var breathId = params.get("b") || "box";
@@ -121,32 +101,94 @@
 
   if (!currentItem) return;
 
-  // 画面要素の設定
+  // 2. 基本情報の描画
   document.getElementById("breathName").textContent = currentItem.name;
   document.getElementById("breathTradition").textContent = currentItem.tradition || "";
   
   var rhythmInfo = document.getElementById("rhythmInfo");
-  if (currentItem.pattern) {
-    var p = currentItem.pattern;
-    var parts = ["Inhale: " + p.inhale + "s"];
-    if (p.hold1) parts.push("Hold: " + p.hold1 + "s");
-    parts.push("Exhale: " + p.exhale + "s");
-    if (p.hold2) parts.push("Rest: " + p.hold2 + "s");
-    rhythmInfo.textContent = parts.join(" | ");
+  var p = currentItem.pattern;
+  
+  if (p) {
+    var parts = [p.inhale + "s Inhale"];
+    if (p.hold1) parts.push(p.hold1 + "s Hold");
+    parts.push(p.exhale + "s Exhale");
+    if (p.hold2) parts.push(p.hold2 + "s Rest");
+    rhythmInfo.textContent = parts.join(" - ");
   } else {
-    rhythmInfo.textContent = "Free pacing (No fixed timer)";
+    rhythmInfo.textContent = "Free pacing";
   }
 
-  // 簡易タイマー制御（プレースホルダー）
+  // 3. タイマー & サークルアニメーション処理
   var startBtn = document.getElementById("startBtn");
   var phaseText = document.getElementById("phaseText");
+  var timerText = document.getElementById("timerText");
+  var visualizer = document.getElementById("visualizer");
+
   var isRunning = false;
+  var timerId = null;
+  var currentPhaseIndex = 0;
+  var timeLeft = 0;
+
+  // フェーズ定義の構築
+  var phases = [];
+  if (p) {
+    if (p.inhale) phases.push({ name: "Inhale", duration: p.inhale, scale: 1.35 });
+    if (p.hold1)  phases.push({ name: "Hold",   duration: p.hold1,  scale: 1.35 });
+    if (p.exhale) phases.push({ name: "Exhale", duration: p.exhale, scale: 1.0 });
+    if (p.hold2)  phases.push({ name: "Rest",   duration: p.hold2,  scale: 1.0 });
+  }
+
+  function tick() {
+    if (timeLeft <= 0) {
+      // 次のフェーズへ移動
+      currentPhaseIndex = (currentPhaseIndex + 1) % phases.length;
+      startPhase(currentPhaseIndex);
+    } else {
+      timerText.textContent = timeLeft;
+      timeLeft--;
+    }
+  }
+
+  function startPhase(index) {
+    var phase = phases[index];
+    phaseText.textContent = phase.name;
+    timeLeft = phase.duration;
+    timerText.textContent = timeLeft;
+    
+    // アニメーション（拡大・縮小）
+    visualizer.style.transition = "transform " + phase.duration + "s linear";
+    visualizer.style.transform = "scale(" + phase.scale + ")";
+    
+    timeLeft--;
+  }
+
+  function startTimer() {
+    if (phases.length === 0) return;
+    isRunning = true;
+    startBtn.textContent = "Pause";
+    currentPhaseIndex = 0;
+    startPhase(currentPhaseIndex);
+    timerId = setInterval(tick, 1000);
+  }
+
+  function stopTimer() {
+    isRunning = false;
+    startBtn.textContent = "Start";
+    clearInterval(timerId);
+    phaseText.textContent = "Ready";
+    timerText.textContent = "0";
+    visualizer.style.transition = "transform 0.5s ease";
+    visualizer.style.transform = "scale(1.0)";
+  }
 
   startBtn.addEventListener("click", function() {
-    isRunning = !isRunning;
-    startBtn.textContent = isRunning ? "Pause" : "Start";
-    phaseText.textContent = isRunning ? "Inhale..." : "Ready";
+    if (isRunning) {
+      stopTimer();
+    } else {
+      startTimer();
+    }
   });
+
 })();
 </script>
 
