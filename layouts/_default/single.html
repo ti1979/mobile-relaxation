@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>{{ .Title }} | {{ .Site.Title }}</title>
+
+  <meta name="description" content="{{ .Summary }}">
+
+  <style>
+    :root {
+      --ink: #5a5568;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--ink);
+      font-family: Georgia, 'Times New Roman', serif;
+      background:
+        radial-gradient(1200px 600px at 15% 0%, #f6efff 0%, transparent 60%),
+        radial-gradient(1000px 700px at 90% 10%, #e8f3ec 0%, transparent 55%),
+        linear-gradient(160deg, #fffdf8 0%, #f4eefb 45%, #eef5f1 100%);
+      background-attachment: fixed;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 18px 24px;
+    }
+
+    .brand {
+      font-size: 1rem;
+      letter-spacing: .35em;
+      text-transform: uppercase;
+      opacity: .7;
+    }
+
+    .navbar {
+      position: relative;
+    }
+
+    .menu {
+      display: flex;
+      gap: 20px;
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      align-items: center;
+    }
+
+    .menu-link {
+      text-decoration: none;
+      color: var(--ink);
+      font-size: .9rem;
+      opacity: .8;
+    }
+
+    .menu-link:hover {
+      opacity: 1;
+    }
+
+    .has-submenu {
+      position: relative;
+    }
+
+    .dropdown-menu {
+      display: none;
+      position: absolute;
+      top: 100%;
+      right: 0;
+      background: rgba(255,255,255,.95);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(90,85,104,.15);
+      border-radius: 12px;
+      padding: 10px 0;
+      list-style: none;
+      min-width: 160px;
+      box-shadow: 0 10px 25px rgba(0,0,0,.08);
+      z-index: 100;
+    }
+
+    .dropdown-menu a {
+      display: block;
+      padding: 8px 16px;
+      text-decoration: none;
+      color: var(--ink);
+      font-size: .85rem;
+    }
+
+    .has-submenu:hover .dropdown-menu,
+    .has-submenu.open .dropdown-menu {
+      display: block;
+    }
+
+    .menu-toggle {
+      display: none;
+      background: none;
+      border: none;
+      cursor: pointer;
+      flex-direction: column;
+      gap: 5px;
+      padding: 4px;
+    }
+
+    .menu-toggle span {
+      display: block;
+      width: 22px;
+      height: 2px;
+      background: var(--ink);
+    }
+
+    main {
+      max-width: 760px;
+      margin: 60px auto;
+      padding: 0 24px 80px;
+    }
+
+    h1 {
+      font-size: clamp(2rem, 5vw, 3rem);
+      font-weight: 500;
+      margin-bottom: 30px;
+    }
+
+    h2, h3 {
+      font-weight: 500;
+      margin-top: 36px;
+    }
+
+    p, li {
+      line-height: 1.8;
+    }
+
+    footer {
+      text-align: center;
+      padding: 30px 20px;
+      opacity: .6;
+      font-size: .8rem;
+    }
+
+    @media (max-width: 600px) {
+      .menu-toggle {
+        display: flex;
+      }
+
+      .menu {
+        display: none;
+        position: absolute;
+        top: 100%;
+        right: 0;
+        background: rgba(255,255,255,.98);
+        padding: 16px;
+        flex-direction: column;
+        align-items: flex-start;
+        width: 200px;
+        border-radius: 16px;
+        box-shadow: 0 10px 30px rgba(0,0,0,.12);
+      }
+
+      .menu.is-active {
+        display: flex;
+      }
+
+      .dropdown-menu {
+        position: static;
+        box-shadow: none;
+        border: none;
+        background: transparent;
+        padding-left: 12px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+  <div class="brand">{{ .Site.Title }}</div>
+
+  <nav class="navbar">
+    <button
+      class="menu-toggle"
+      id="menuToggle"
+      aria-label="Toggle Navigation">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+
+    <ul class="menu" id="navMenu">
+      <li>
+        <a href="{{ "" | relURL }}" class="menu-link">Home</a>
+      </li>
+
+      <li>
+        <a href="{{ "train/" | relURL }}" class="menu-link">Training</a>
+      </li>
+
+      <li class="menu-item has-submenu">
+        <a href="#" class="menu-link" id="submenuToggle">
+          About & Legal ▾
+        </a>
+
+        <ul class="dropdown-menu">
+          <li>
+            <a href="{{ "about/" | relURL }}">About Us</a>
+          </li>
+          <li>
+            <a href="{{ "privacy/" | relURL }}">Privacy Policy</a>
+          </li>
+          <li>
+            <a href="{{ "disclaimer/" | relURL }}">Disclaimer</a>
+          </li>
+        </ul>
+      </li>
+    </ul>
+  </nav>
+</header>
+
+<main>
+  <h1>{{ .Title }}</h1>
+
+  <article>
+    {{ .Content }}
+  </article>
+</main>
+
+<footer>
+  <p>
+    <a href="{{ "about/" | relURL }}">About Us</a> 
+    <a href="{{ "privacy/" | relURL }}">Privacy Policy</a> 
+    <a href="{{ "legal/" | relURL }}">Legal Information</a>
+  </p>
+
+  <p>&copy; {{ now.Year }} Amblery</p>
+</footer>
+
+
+<script>
+(function () {
+  var menuToggle = document.getElementById("menuToggle");
+  var navMenu = document.getElementById("navMenu");
+  var submenuToggle = document.getElementById("submenuToggle");
+
+  if (menuToggle && navMenu) {
+    menuToggle.addEventListener("click", function () {
+      navMenu.classList.toggle("is-active");
+    });
+  }
+
+  if (submenuToggle) {
+    submenuToggle.addEventListener("click", function (e) {
+      if (window.innerWidth <= 600) {
+        e.preventDefault();
+        submenuToggle.parentElement.classList.toggle("open");
+      }
+    });
+  }
+})();
+</script>
+
+</body>
+</html>

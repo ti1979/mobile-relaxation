@@ -38,17 +38,6 @@
     .title { font-size: 1.8rem; font-weight: 500; margin: 0 0 4px; }
     .tradition { font-size: .8rem; letter-spacing: .2em; text-transform: uppercase; opacity: .5; margin-bottom: 24px; }
 
-    /* 呼吸アニメーション用のサークル */
-    .visualizer {
-      width: 220px; height: 220px; margin: 0 auto 24px; border-radius: 50%;
-      background: radial-gradient(circle, rgba(214,199,240,.6) 0%, rgba(255,255,255,.8) 100%);
-      box-shadow: 0 10px 40px rgba(120,100,160,.15);
-      display: flex; flex-direction: column; align-items: center; justify-content: center;
-      transition: transform 0.1s linear; position: relative;
-    }
-    .phase-text { font-size: 1.2rem; letter-spacing: .1em; font-weight: 600; margin-bottom: 4px; }
-    .timer-text { font-size: 2.2rem; font-weight: bold; }
-
     /* 呼吸間隔（リズム）表示バッジ */
     .rhythm-badge {
       display: inline-block;
@@ -59,13 +48,51 @@
       font-size: 0.95rem;
       font-weight: 500;
       border: 1px solid rgba(90, 85, 104, 0.15);
-      margin-bottom: 20px;
+      margin-bottom: 12px;
       letter-spacing: 0.05em;
     }
 
-    .controls { display: flex; gap: 12px; justify-content: center; margin-top: 10px; }
+    /* ペース（速さ）調整スライダー。固定パターンを持つ呼吸法にのみ表示 */
+    .pace-control {
+      display: flex; align-items: center; justify-content: center; gap: 10px;
+      font-size: .82rem; opacity: .8; margin-bottom: 22px;
+    }
+    .pace-control input[type="range"] { width: 140px; accent-color: #9b8cc9; }
+    .pace-control span { min-width: 3.2em; text-align: left; font-weight: 600; }
+
+    /* 呼吸アニメーション用のサークル */
+    .visualizer {
+      width: 220px; height: 220px; margin: 0 auto 12px; border-radius: 50%;
+      background: radial-gradient(circle, rgba(214,199,240,.6) 0%, rgba(255,255,255,.8) 100%);
+      box-shadow: 0 10px 40px rgba(120,100,160,.15);
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      transition: transform 0.1s linear; position: relative;
+    }
+    .phase-text { font-size: 1.2rem; letter-spacing: .1em; font-weight: 600; margin-bottom: 4px; }
+    .timer-text { font-size: 2.2rem; font-weight: bold; }
+
+    /* palming など、固定タイマーを持たない「インスタレーション」型のゆっくりした拡縮アニメーション */
+    .visualizer.free-visual { animation: freePulse 9s ease-in-out infinite; }
+    @keyframes freePulse {
+      0%, 100% { transform: scale(1); }
+      50%      { transform: scale(1.18); }
+    }
+
+    /* 呼吸法ごとの追加ガイド文（Bellows Breathing の「強く吸う／強く吐く」など） */
+    .cue-text { font-size: .95rem; opacity: .75; min-height: 1.3em; margin-bottom: 18px; }
+
+    .controls { display: flex; gap: 12px; justify-content: center; margin-top: 10px; flex-wrap: wrap; }
     .btn { font: inherit; cursor: pointer; border: 1px solid rgba(90,85,104,.3); border-radius: 25px; padding: 12px 32px; background: #fff; color: var(--ink); font-weight: 500; font-size: 1rem; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
     .btn:hover { background: #fdfdfd; }
+    .btn[disabled] { opacity: .5; cursor: default; }
+
+    /* アンビエントサウンドの ON/OFF トグル。音源が用意されている場合のみ表示される */
+    .ambient-btn { display: none; font-size: .9rem; padding: 12px 24px; }
+
+    /* Wikipedia / further reading / related practices へのリンク行 */
+    .links-row { margin-top: 28px; display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; font-size: .85rem; }
+    .links-row a { color: var(--ink); opacity: .75; text-decoration: none; border-bottom: 1px dotted rgba(90,85,104,.4); }
+    .links-row a:hover { opacity: 1; }
   </style>
 
 <!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "0c4ca592694b40aca92f14a79514c3c0"}'></script><!-- End Cloudflare Web Analytics -->
@@ -80,19 +107,36 @@
   <!-- シンプルに呼吸間隔を表示 -->
   <div class="rhythm-badge" id="rhythmInfo">Loading rhythm...</div>
 
+  <!-- ペース調整スライダー（固定パターンがある呼吸法のみ表示） -->
+  <div class="pace-control" id="paceControl" style="display:none;">
+    <label for="paceRange">Pace</label>
+    <input type="range" id="paceRange" min="0.6" max="1.6" step="0.1" value="1">
+    <span id="paceValue">1.0x</span>
+  </div>
+
   <!-- 呼吸サークル 兼 タイマー表示 -->
   <div class="visualizer" id="visualizer">
     <div class="phase-text" id="phaseText">Ready</div>
     <div class="timer-text" id="timerText">0</div>
   </div>
 
+  <!-- Bellows Breathing の「強く吸う／強く吐く」など、フェーズごとの追加ガイド -->
+  <div class="cue-text" id="cueText"></div>
+
   <div class="controls">
     <button class="btn" id="startBtn">Start</button>
+    <button class="btn ambient-btn" id="ambientBtn">🔈 Ambient sound: Off</button>
   </div>
+
+  <!-- Wikipedia / further reading / related practices -->
+  <div class="links-row" id="linksRow"></div>
 </div>
 
+<!-- アンビエントサウンド用（音源ファイルが用意されるまでは自動的に非表示のまま） -->
+<audio id="ambientAudio" preload="none"></audio>
+
 <!-- Hugoのデータを埋め込む要素 -->
-<div id="data-store" data-breaths='{{ site.Data.breaths | jsonify | safeHTMLAttr }}' style="display:none;"></div>
+<div id="data-store" data-breath='{{ site.Data.breath | jsonify | safeHTMLAttr }}' style="display:none;"></div>
 
 <script>
 (function() {
@@ -103,59 +147,90 @@
 
   var rawData = [];
   try {
-    rawData = JSON.parse(store.getAttribute("data-breaths") || "[]");
+    rawData = JSON.parse(store.getAttribute("data-breath") || "[]");
   } catch(e) {
-    console.error("Could not parse breaths data", e);
+    console.error("Could not parse breath data", e);
   }
 
   // 1. 呼吸データの抽出
-  var breaths = rawData.filter(function(item) { return item.id; });
+  var breath = rawData.filter(function(item) { return item.id; });
   var params = new URLSearchParams(window.location.search);
   var breathId = params.get("b") || "box";
-  var currentItem = breaths.find(function(item) { return item.id === breathId; }) || breaths[0];
+  var currentItem = breath.find(function(item) { return item.id === breathId; }) || breath[0];
 
   if (!currentItem) return;
 
   // 2. 基本情報の描画
   document.getElementById("breathName").textContent = currentItem.name;
   document.getElementById("breathTradition").textContent = currentItem.tradition || "";
-  
-  var rhythmInfo = document.getElementById("rhythmInfo");
-  var p = currentItem.pattern;
-  
-  if (p) {
-    var parts = [p.inhale + "s Inhale"];
-    if (p.hold1) parts.push(p.hold1 + "s Hold");
-    parts.push(p.exhale + "s Exhale");
-    if (p.hold2) parts.push(p.hold2 + "s Rest");
-    rhythmInfo.textContent = parts.join(" - ");
-  } else {
-    rhythmInfo.textContent = "Free pacing";
-  }
 
-  // 3. タイマー & サークルアニメーション処理
+  var rhythmInfo = document.getElementById("rhythmInfo");
+  var p = currentItem.pattern; // null の場合は「タイマーなし」＝ palming のようなインスタレーション型
+
+  // 3. 要素の取得
   var startBtn = document.getElementById("startBtn");
   var phaseText = document.getElementById("phaseText");
   var timerText = document.getElementById("timerText");
+  var cueText = document.getElementById("cueText");
   var visualizer = document.getElementById("visualizer");
+  var paceControl = document.getElementById("paceControl");
+  var paceRange = document.getElementById("paceRange");
+  var paceValue = document.getElementById("paceValue");
+  var ambientBtn = document.getElementById("ambientBtn");
+  var ambientAudio = document.getElementById("ambientAudio");
+  var linksRow = document.getElementById("linksRow");
 
   var isRunning = false;
   var timerId = null;
   var currentPhaseIndex = 0;
   var timeLeft = 0;
+  var paceMultiplier = 1;
+  var ambientOn = false;
+  var ambientReady = false;
 
-  // フェーズ定義の構築
-  var phases = [];
-  if (p) {
-    if (p.inhale) phases.push({ name: "Inhale", duration: p.inhale, scale: 1.35 });
-    if (p.hold1)  phases.push({ name: "Hold",   duration: p.hold1,  scale: 1.35 });
-    if (p.exhale) phases.push({ name: "Exhale", duration: p.exhale, scale: 1.0 });
-    if (p.hold2)  phases.push({ name: "Rest",   duration: p.hold2,  scale: 1.0 });
+  // 4. ペース調整（ユーザーが手動で速さを変更できるようにする）
+  function updateRhythmInfo() {
+    if (!p) {
+      rhythmInfo.textContent = "No fixed timer — move at your own pace.";
+      return;
+    }
+    var parts = [scaled(p.inhale) + "s Inhale"];
+    if (p.hold1) parts.push(scaled(p.hold1) + "s Hold");
+    parts.push(scaled(p.exhale) + "s Exhale");
+    if (p.hold2) parts.push(scaled(p.hold2) + "s Rest");
+    rhythmInfo.textContent = parts.join(" - ");
   }
+
+  function scaled(v) {
+    return Math.max(1, Math.round(v * paceMultiplier));
+  }
+
+  if (p) {
+    paceControl.style.display = "flex";
+    paceRange.addEventListener("input", function () {
+      paceMultiplier = parseFloat(paceRange.value);
+      paceValue.textContent = paceMultiplier.toFixed(1) + "x";
+      updateRhythmInfo();
+    });
+  }
+  updateRhythmInfo();
+
+  // 5. フェーズ定義の構築（Bellows Breathing の cues もここで拾う）
+  function buildPhases() {
+    var list = [];
+    if (!p) return list;
+    var cues = currentItem.cues || {};
+    if (p.inhale) list.push({ name: "Inhale", duration: scaled(p.inhale), scale: 1.35, cue: cues.inhale });
+    if (p.hold1)  list.push({ name: "Hold",   duration: scaled(p.hold1),  scale: 1.35, cue: "" });
+    if (p.exhale) list.push({ name: "Exhale", duration: scaled(p.exhale), scale: 1.0,  cue: cues.exhale });
+    if (p.hold2)  list.push({ name: "Rest",   duration: scaled(p.hold2),  scale: 1.0,  cue: "" });
+    return list;
+  }
+
+  var phases = [];
 
   function tick() {
     if (timeLeft <= 0) {
-      // 次のフェーズへ移動
       currentPhaseIndex = (currentPhaseIndex + 1) % phases.length;
       startPhase(currentPhaseIndex);
     } else {
@@ -167,42 +242,134 @@
   function startPhase(index) {
     var phase = phases[index];
     phaseText.textContent = phase.name;
+    cueText.textContent = phase.cue || "";
     timeLeft = phase.duration;
     timerText.textContent = timeLeft;
-    
-    // アニメーション（拡大・縮小）
+
     visualizer.style.transition = "transform " + phase.duration + "s linear";
     visualizer.style.transform = "scale(" + phase.scale + ")";
-    
+
     timeLeft--;
   }
 
   function startTimer() {
+    phases = buildPhases();
     if (phases.length === 0) return;
     isRunning = true;
     startBtn.textContent = "Pause";
+    paceRange.disabled = true;
     currentPhaseIndex = 0;
     startPhase(currentPhaseIndex);
     timerId = setInterval(tick, 1000);
+    ambientPlay();
   }
 
   function stopTimer() {
     isRunning = false;
     startBtn.textContent = "Start";
+    paceRange.disabled = false;
     clearInterval(timerId);
     phaseText.textContent = "Ready";
     timerText.textContent = "0";
+    cueText.textContent = "";
     visualizer.style.transition = "transform 0.5s ease";
     visualizer.style.transform = "scale(1.0)";
+    ambientPause();
   }
 
-  startBtn.addEventListener("click", function() {
-    if (isRunning) {
-      stopTimer();
+  // 6. タイマーなしの「インスタレーション」モード（palming など pattern が null の場合）
+  function startFree() {
+    isRunning = true;
+    startBtn.textContent = "Stop";
+    phaseText.textContent = "Relax";
+    timerText.style.display = "none";
+    visualizer.classList.add("free-visual");
+    ambientPlay();
+  }
+
+  function stopFree() {
+    isRunning = false;
+    startBtn.textContent = "Start";
+    phaseText.textContent = "Ready";
+    timerText.style.display = "none";
+    visualizer.classList.remove("free-visual");
+    visualizer.style.transform = "scale(1.0)";
+    ambientPause();
+  }
+
+  if (!p) {
+    // pattern が無い呼吸法ではタイマー表示自体を隠す
+    timerText.style.display = "none";
+  }
+
+  startBtn.addEventListener("click", function () {
+    if (p) {
+      if (isRunning) { stopTimer(); } else { startTimer(); }
     } else {
-      startTimer();
+      if (isRunning) { stopFree(); } else { startFree(); }
     }
   });
+
+  // 7. アンビエントサウンド（音源はまだ用意されていない前提。ファイルが存在すれば自動的にボタンが現れる）
+  function ambientPlay() {
+    if (ambientOn && ambientReady) {
+      try { ambientAudio.play(); } catch (e) { /* 再生できない場合は静かに無視 */ }
+    }
+  }
+  function ambientPause() {
+    if (ambientAudio) ambientAudio.pause();
+  }
+
+  if (currentItem.ambient) {
+    ambientAudio.loop = true;
+    ambientAudio.src = "/" + String(currentItem.ambient).replace(/^\/+/, "");
+    ambientAudio.addEventListener("canplaythrough", function () {
+      ambientReady = true;
+      ambientBtn.style.display = "inline-block";
+    }, { once: true });
+    ambientAudio.addEventListener("error", function () {
+      ambientReady = false;
+      ambientBtn.style.display = "none";
+    });
+    ambientAudio.load();
+
+    ambientBtn.addEventListener("click", function () {
+      ambientOn = !ambientOn;
+      ambientBtn.textContent = ambientOn ? "🔊 Ambient sound: On" : "🔈 Ambient sound: Off";
+      if (ambientOn && isRunning) {
+        ambientPlay();
+      } else {
+        ambientPause();
+      }
+    });
+  }
+
+  // 8. Wikipedia / further reading / related practices へのリンクを描画
+  function addLink(href, label) {
+    var a = document.createElement("a");
+    a.href = href;
+    a.textContent = label;
+    a.target = "_blank";
+    a.rel = "noopener noreferrer";
+    linksRow.appendChild(a);
+  }
+
+  if (currentItem.wiki) {
+    addLink(currentItem.wiki, "Wikipedia");
+  }
+  // further_reading は複数の参考記事を配列で持てる（例：palming の目の神経/ホルモンバランスに関する記事）
+  if (Array.isArray(currentItem.further_reading)) {
+    currentItem.further_reading.forEach(function (ref) {
+      if (ref && ref.url) addLink(ref.url, ref.title || "Further reading");
+    });
+  } else if (currentItem.further_reading && currentItem.further_reading.url) {
+    addLink(currentItem.further_reading.url, currentItem.further_reading.title || "Further reading");
+  }
+  if (Array.isArray(currentItem.related)) {
+    currentItem.related.forEach(function (rel) {
+      if (rel.wiki) addLink(rel.wiki, "Related: " + rel.name);
+    });
+  }
 
 })();
 </script>
