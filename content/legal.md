@@ -93,8 +93,6 @@ This website is operated and maintained by:
 
 **Amblery**
 
-Contact: **hello@amblery.com**
-
 ### Contact
 
 For questions, corrections, or concerns regarding this website or this Legal & Disclaimer notice, please contact:

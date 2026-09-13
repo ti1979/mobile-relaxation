@@ -138,16 +138,6 @@
       .dropdown-menu { position: static; box-shadow: none; border: none; background: transparent; padding-left: 12px; }
     }
 
-
-
-  if (submenuToggle) {
-    submenuToggle.addEventListener("click", function (e) {
-      if (window.innerWidth <= 600) {
-        e.preventDefault();
-        submenuToggle.parentElement.classList.toggle("open");
-      }
-    });
-  }
     /* Further reading / Related practices（palming の目の神経に関する参考記事、Bhastrika と Tummo / Wim Hof Method の関連など） */
     .modal-further, .modal-related { margin-top: 18px; }
     .modal-further a { color: var(--ink); }
@@ -158,6 +148,17 @@
       background:rgba(255,255,255,.7); transition:background .3s;
     }
     .related-chips a:hover { background:#fff; }
+
+    /* サイトフッター / スポンサードリンク
+       サイト全体の落ち着いたトーンを崩さないよう、控えめな小さいラベルとして表示 */
+    .site-footer { text-align:center; padding:34px 24px 46px; }
+    .sponsored-link {
+      display:inline-block; font-size:.68rem; letter-spacing:.18em; text-transform:uppercase;
+      text-decoration:none; color:var(--ink); opacity:.4;
+      border-bottom:1px dotted rgba(90,85,104,.4); padding-bottom:2px;
+      transition:opacity .4s ease;
+    }
+    .sponsored-link:hover { opacity:.75; }
   </style>
   
 <!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "0c4ca592694b40aca92f14a79514c3c0"}'></script><!-- End Cloudflare Web Analytics -->
@@ -231,6 +232,15 @@
     </div>
   </div>
 </div>
+
+<footer class="site-footer">
+  <a href="https://www.profitableratecpmnetwork.com/yi5hgvyn6a?key=2876633517f3c5cd733c1a9ae4fa3f2d"
+     rel="sponsored noopener"
+     target="_blank"
+     class="sponsored-link">
+    Sponsored
+  </a>
+</footer>
 
 <script>
 (function () {
@@ -444,6 +454,15 @@
   if (menuToggle && navMenu) {
     menuToggle.addEventListener("click", function () {
       navMenu.classList.toggle("is-active");
+    });
+  }
+
+  if (submenuToggle) {
+    submenuToggle.addEventListener("click", function (e) {
+      if (window.innerWidth <= 600) {
+        e.preventDefault();
+        submenuToggle.parentElement.classList.toggle("open");
+      }
     });
   }
 

@@ -45,6 +45,9 @@
 
     .navbar {
       position: relative;
+      display: flex;
+      align-items: center;
+      gap: 16px;
     }
 
     .menu {
@@ -61,10 +64,40 @@
       color: var(--ink);
       font-size: .9rem;
       opacity: .8;
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-family: inherit;
     }
 
     .menu-link:hover {
       opacity: 1;
+    }
+
+    /* BGM Toggle Button Styling */
+    .audio-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(255, 255, 255, 0.6);
+      border: 1px solid rgba(90, 85, 104, 0.2);
+      border-radius: 20px;
+      padding: 6px 12px;
+      font-size: 0.85rem;
+      cursor: pointer;
+      color: var(--ink);
+      transition: all 0.2s ease;
+      font-family: inherit;
+    }
+
+    .audio-btn:hover {
+      background: rgba(255, 255, 255, 0.9);
+      border-color: rgba(90, 85, 104, 0.4);
+    }
+
+    .audio-btn.is-playing {
+      background: rgba(232, 243, 236, 0.9);
+      border-color: #a3d9b1;
     }
 
     .has-submenu {
@@ -185,6 +218,12 @@
   <div class="brand">{{ .Site.Title }}</div>
 
   <nav class="navbar">
+    <!-- Music Player Toggle Button -->
+    <button id="bgmToggle" class="audio-btn" aria-label="Toggle Relaxation Music">
+      <span id="bgmIcon">🔇</span>
+      <span id="bgmLabel">relaxation music</span>
+    </button>
+
     <button
       class="menu-toggle"
       id="menuToggle"
@@ -195,31 +234,26 @@
     </button>
 
     <ul class="menu" id="navMenu">
-      <li>
-        <a href="{{ "" | relURL }}" class="menu-link">Home</a>
-      </li>
-
-      <li>
-        <a href="{{ "train/" | relURL }}" class="menu-link">Training</a>
-      </li>
-
-      <li class="menu-item has-submenu">
-        <a href="#" class="menu-link" id="submenuToggle">
-          About & Legal ▾
-        </a>
-
-        <ul class="dropdown-menu">
-          <li>
-            <a href="{{ "about/" | relURL }}">About Us</a>
+      {{ range site.Menus.main }}
+        {{ if .HasChildren }}
+          <li class="menu-item has-submenu">
+            <button class="menu-link" id="submenuToggle" aria-expanded="false">
+              {{ .Name }} ▾
+            </button>
+            <ul class="dropdown-menu">
+              {{ range .Children }}
+                <li>
+                  <a href="{{ .URL | relURL }}">{{ .Name }}</a>
+                </li>
+              {{ end }}
+            </ul>
           </li>
+        {{ else }}
           <li>
-            <a href="{{ "privacy/" | relURL }}">Privacy Policy</a>
+            <a href="{{ .URL | relURL }}" class="menu-link">{{ .Name }}</a>
           </li>
-          <li>
-            <a href="{{ "disclaimer/" | relURL }}">Disclaimer</a>
-          </li>
-        </ul>
-      </li>
+        {{ end }}
+      {{ end }}
     </ul>
   </nav>
 </header>
@@ -242,9 +276,14 @@
   <p>&copy; {{ now.Year }} Amblery</p>
 </footer>
 
+<!-- BGM Audio Element -->
+<audio id="bgmAudio" loop preload="auto">
+  <source src="https://pub-fb52d5721f4b487aa0f32022b00f28f9.r2.dev/mobile-relaxation/relaxation/ambient.mp3" type="audio/mpeg">
+</audio>
 
 <script>
 (function () {
+  // Mobile Nav Toggle
   var menuToggle = document.getElementById("menuToggle");
   var navMenu = document.getElementById("navMenu");
   var submenuToggle = document.getElementById("submenuToggle");
@@ -260,6 +299,52 @@
       if (window.innerWidth <= 600) {
         e.preventDefault();
         submenuToggle.parentElement.classList.toggle("open");
+      }
+    });
+  }
+
+  // BGM Player Controller
+  var bgmAudio = document.getElementById("bgmAudio");
+  var bgmToggle = document.getElementById("bgmToggle");
+  var bgmIcon = document.getElementById("bgmIcon");
+  var bgmLabel = document.getElementById("bgmLabel");
+
+  if (bgmAudio && bgmToggle) {
+    var isPlaying = localStorage.getItem("relaxation_music_playing") === "true";
+
+    function updateUI(playing) {
+      if (playing) {
+        bgmIcon.textContent = "🎵";
+        bgmToggle.classList.add("is-playing");
+      } else {
+        bgmIcon.textContent = "🔇";
+        bgmToggle.classList.remove("is-playing");
+      }
+    }
+
+    // Restore play state from localStorage
+    if (isPlaying) {
+      bgmAudio.play().then(function () {
+        updateUI(true);
+      }).catch(function () {
+        // Autoplay blocked by browser policy
+        localStorage.setItem("relaxation_music_playing", "false");
+        updateUI(false);
+      });
+    }
+
+    bgmToggle.addEventListener("click", function () {
+      if (bgmAudio.paused) {
+        bgmAudio.play().then(function () {
+          localStorage.setItem("relaxation_music_playing", "true");
+          updateUI(true);
+        }).catch(function (err) {
+          console.error("Audio playback error:", err);
+        });
+      } else {
+        bgmAudio.pause();
+        localStorage.setItem("relaxation_music_playing", "false");
+        updateUI(false);
       }
     });
   }

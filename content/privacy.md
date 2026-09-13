@@ -88,7 +88,6 @@ The updated version will be posted on this page with a revised date.
 
 ## Operator
 
-**Operator:** Amblery  
-**Contact:** hello@amblery.com
+**Operator:** Amblery
 
 **Last Updated:** September 12, 2026

@@ -23,8 +23,7 @@ The information on this website is not intended to replace professional medical 
 ## Operator
 
 **Operator:** Amblery  
-**Website:** https://mobile-relaxation.pages.dev/  
-**Contact:** hello@amblery.com
+**Website:** https://mobile-relaxation.pages.dev/
 
 Mobile Relaxation is operated by the same independent operator behind **Script Trek (Website: https://amblery.com)**, a separate educational project by Amblery.
 
