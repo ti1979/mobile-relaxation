@@ -9,7 +9,7 @@
   <!-- 検索結果に表示される説明文（100〜120文字程度） -->
   <meta name="description" content="A simple, web-based breathwork and relaxation app. Practice Box Breathing, 4-7-8, and custom breathing patterns anytime on mobile.">
 
-<!-- SNSシェア時に綺麗に表示させるOGPタグ -->
+  <!-- SNSシェア時に綺麗に表示させるOGPタグ -->
   <meta property="og:title" content="Mobile Relaxation - Breathwork App">
   <meta property="og:description" content="Simple breathing exercises for daily relaxation and mindfulness.">
   <meta property="og:type" content="website">
@@ -86,9 +86,6 @@
     .btn:hover { background: #fdfdfd; }
     .btn[disabled] { opacity: .5; cursor: default; }
 
-    /* アンビエントサウンドの ON/OFF トグル。音源が用意されている場合のみ表示される */
-    .ambient-btn { display: none; font-size: .9rem; padding: 12px 24px; }
-
     /* Wikipedia / further reading / related practices へのリンク行 */
     .links-row { margin-top: 28px; display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; font-size: .85rem; }
     .links-row a { color: var(--ink); opacity: .75; text-decoration: none; border-bottom: 1px dotted rgba(90,85,104,.4); }
@@ -125,15 +122,11 @@
 
   <div class="controls">
     <button class="btn" id="startBtn">Start</button>
-    <button class="btn ambient-btn" id="ambientBtn">🔈 Ambient sound: Off</button>
   </div>
 
   <!-- Wikipedia / further reading / related practices -->
   <div class="links-row" id="linksRow"></div>
 </div>
-
-<!-- アンビエントサウンド用（音源ファイルが用意されるまでは自動的に非表示のまま） -->
-<audio id="ambientAudio" preload="none"></audio>
 
 <!-- Hugoのデータを埋め込む要素 -->
 <div id="data-store" data-breath='{{ site.Data.breath | jsonify | safeHTMLAttr }}' style="display:none;"></div>
@@ -176,8 +169,6 @@
   var paceControl = document.getElementById("paceControl");
   var paceRange = document.getElementById("paceRange");
   var paceValue = document.getElementById("paceValue");
-  var ambientBtn = document.getElementById("ambientBtn");
-  var ambientAudio = document.getElementById("ambientAudio");
   var linksRow = document.getElementById("linksRow");
 
   var isRunning = false;
@@ -185,8 +176,6 @@
   var currentPhaseIndex = 0;
   var timeLeft = 0;
   var paceMultiplier = 1;
-  var ambientOn = false;
-  var ambientReady = false;
 
   // 4. ペース調整（ユーザーが手動で速さを変更できるようにする）
   function updateRhythmInfo() {
@@ -261,7 +250,6 @@
     currentPhaseIndex = 0;
     startPhase(currentPhaseIndex);
     timerId = setInterval(tick, 1000);
-    ambientPlay();
   }
 
   function stopTimer() {
@@ -274,7 +262,6 @@
     cueText.textContent = "";
     visualizer.style.transition = "transform 0.5s ease";
     visualizer.style.transform = "scale(1.0)";
-    ambientPause();
   }
 
   // 6. タイマーなしの「インスタレーション」モード（palming など pattern が null の場合）
@@ -284,7 +271,6 @@
     phaseText.textContent = "Relax";
     timerText.style.display = "none";
     visualizer.classList.add("free-visual");
-    ambientPlay();
   }
 
   function stopFree() {
@@ -294,7 +280,6 @@
     timerText.style.display = "none";
     visualizer.classList.remove("free-visual");
     visualizer.style.transform = "scale(1.0)";
-    ambientPause();
   }
 
   if (!p) {
@@ -310,41 +295,7 @@
     }
   });
 
-  // 7. アンビエントサウンド（音源はまだ用意されていない前提。ファイルが存在すれば自動的にボタンが現れる）
-  function ambientPlay() {
-    if (ambientOn && ambientReady) {
-      try { ambientAudio.play(); } catch (e) { /* 再生できない場合は静かに無視 */ }
-    }
-  }
-  function ambientPause() {
-    if (ambientAudio) ambientAudio.pause();
-  }
-
-  if (currentItem.ambient) {
-    ambientAudio.loop = true;
-    ambientAudio.src = "/" + String(currentItem.ambient).replace(/^\/+/, "");
-    ambientAudio.addEventListener("canplaythrough", function () {
-      ambientReady = true;
-      ambientBtn.style.display = "inline-block";
-    }, { once: true });
-    ambientAudio.addEventListener("error", function () {
-      ambientReady = false;
-      ambientBtn.style.display = "none";
-    });
-    ambientAudio.load();
-
-    ambientBtn.addEventListener("click", function () {
-      ambientOn = !ambientOn;
-      ambientBtn.textContent = ambientOn ? "🔊 Ambient sound: On" : "🔈 Ambient sound: Off";
-      if (ambientOn && isRunning) {
-        ambientPlay();
-      } else {
-        ambientPause();
-      }
-    });
-  }
-
-  // 8. Wikipedia / further reading / related practices へのリンクを描画
+  // 7. Wikipedia / further reading / related practices へのリンクを描画
   function addLink(href, label) {
     var a = document.createElement("a");
     a.href = href;
@@ -357,7 +308,6 @@
   if (currentItem.wiki) {
     addLink(currentItem.wiki, "Wikipedia");
   }
-  // further_reading は複数の参考記事を配列で持てる（例：palming の目の神経/ホルモンバランスに関する記事）
   if (Array.isArray(currentItem.further_reading)) {
     currentItem.further_reading.forEach(function (ref) {
       if (ref && ref.url) addLink(ref.url, ref.title || "Further reading");

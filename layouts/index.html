@@ -178,21 +178,11 @@
 
     <ul class="menu" id="navMenu">
       <li class="menu-item"><a href="{{ "" | relURL }}" class="menu-link">Home</a></li>
-      <li class="menu-item"><a href="{{ "train/" | relURL }}" class="menu-link">Training</a></li>
-      
-      <!-- 法的・紹介ドロップダウン -->
-      <li class="menu-item has-submenu">
-        <a href="#" class="menu-link" id="submenuToggle">About & Legal ▾</a>
-        <ul class="dropdown-menu">
-          <li><a href="{{ "about/" | relURL }}">About Us</a></li>
-          <li><a href="{{ "privacy/" | relURL }}">Privacy Policy</a></li>
-        　<li><a href="{{ "legal/" | relURL }}">Legal Information</a></li>
-       </ul>
-      </li>
+      <li class="menu-item"><a href="{{ "about/" | relURL }}" class="menu-link">About Us</a></li>
+      <li class="menu-item"><a href="{{ "privacy/" | relURL }}" class="menu-link">Privacy Policy</a></li>
+      <li class="menu-item"><a href="{{ "legal/" | relURL }}" class="menu-link">Legal Information</a></li>
     </ul>
   </nav>
-  
-  
 </header>
 
 <section class="hero">
@@ -371,7 +361,6 @@
     modalHow.textContent = item.howto || "";
     modalTrain.href = TRAIN_BASE + "?b=" + encodeURIComponent(item.id);
 
-    // Wikipedia: 専用記事が無い呼吸法（例：Box Breathing）ではボタンごと非表示にする
     if (item.wiki) {
       modalWiki.href = item.wiki;
       modalWiki.style.display = "";
@@ -379,11 +368,12 @@
       modalWiki.style.display = "none";
     }
 
-    // Further reading（palming の目の神経・手の神経密度とホルモンバランスに関する記事など。複数可）
+    // Further reading
     modalFurtherLinks.innerHTML = "";
     var refs = Array.isArray(item.further_reading)
       ? item.further_reading
       : (item.further_reading && item.further_reading.url ? [item.further_reading] : []);
+    
     if (refs.length > 0) {
       refs.forEach(function (ref) {
         if (!ref || !ref.url) return;
@@ -394,13 +384,6 @@
         a.rel = "noopener noreferrer";
         a.textContent = ref.title || ref.url;
         p.appendChild(a);
-        if (ref.note) {
-          var small = document.createElement("span");
-          small.style.opacity = ".6";
-          small.style.fontSize = ".8rem";
-          small.textContent = " — " + ref.note;
-          p.appendChild(small);
-        }
         modalFurtherLinks.appendChild(p);
       });
       modalFurther.style.display = "";
@@ -408,21 +391,18 @@
       modalFurther.style.display = "none";
     }
 
-    // Related practices（Bhastrika ⇔ Tummo / Wim Hof Method など、伝統をまたいだつながり）
+    // Related practices
     relatedChips.innerHTML = "";
     if (Array.isArray(item.related) && item.related.length > 0) {
       item.related.forEach(function (rel) {
-        var chip = document.createElement("a");
-        chip.textContent = rel.name;
-        chip.title = rel.blurb || "";
+        var a = document.createElement("a");
+        a.href = rel.wiki || "#";
         if (rel.wiki) {
-          chip.href = rel.wiki;
-          chip.target = "_blank";
-          chip.rel = "noopener noreferrer";
-        } else {
-          chip.href = "#";
+          a.target = "_blank";
+          a.rel = "noopener noreferrer";
         }
-        relatedChips.appendChild(chip);
+        a.textContent = rel.name;
+        relatedChips.appendChild(a);
       });
       modalRelated.style.display = "";
     } else {
@@ -432,40 +412,40 @@
     modal.classList.add("open");
   }
 
-  function closeModal() { modal.classList.remove("open"); }
+  // Modal event listeners
+  var modalClose = document.getElementById("modalClose");
+  if (modalClose) {
+    modalClose.addEventListener("click", function() {
+      modal.classList.remove("open");
+    });
+  }
 
-  document.getElementById("modalClose").addEventListener("click", closeModal);
-  modal.addEventListener("click", function (e) { if (e.target === modal) closeModal(); });
-  document.addEventListener("keydown", function (e) { if (e.key === "Escape") closeModal(); });
+  if (modal) {
+    modal.addEventListener("click", function(e) {
+      if (e.target === modal) modal.classList.remove("open");
+    });
+  }
 
-  document.getElementById("trekAgain").addEventListener("click", function () {
-    gallery.classList.add("is-shuffling");
-    setTimeout(function () {
-      renderCards();
-      gallery.classList.remove("is-shuffling");
-    }, 260);
-  });
+  var shuffleBtn = document.getElementById("trekAgain");
+  if (shuffleBtn) {
+    shuffleBtn.addEventListener("click", function() {
+      gallery.classList.add("is-shuffling");
+      setTimeout(function() {
+        renderCards();
+        gallery.classList.remove("is-shuffling");
+      }, 300);
+    });
+  }
 
-      // ハンバーガーメニューとドロップダウンのスマホ対応制御
   var menuToggle = document.getElementById("menuToggle");
   var navMenu = document.getElementById("navMenu");
-  var submenuToggle = document.getElementById("submenuToggle");
-
   if (menuToggle && navMenu) {
     menuToggle.addEventListener("click", function () {
       navMenu.classList.toggle("is-active");
     });
   }
 
-  if (submenuToggle) {
-    submenuToggle.addEventListener("click", function (e) {
-      if (window.innerWidth <= 600) {
-        e.preventDefault();
-        submenuToggle.parentElement.classList.toggle("open");
-      }
-    });
-  }
-
+  // 初回レンダリング
   renderCards();
 })();
 </script>

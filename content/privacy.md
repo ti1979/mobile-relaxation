@@ -6,7 +6,7 @@ url: "/privacy/"
 ---
 
 
-This Privacy Policy explains how information may be collected and used when you visit Mobile Relaxation, a website operated by **Amblery**.
+This Privacy Policy explains how information may be collected and used when you visit Mobile Relaxation, a website operated by Amblery.
 
 We aim to keep the information we collect to a reasonable minimum and to respect the privacy of visitors.
 
